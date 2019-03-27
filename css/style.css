@@ -9,7 +9,7 @@
 /* Basic */
 
 	body, input, select, textarea {
-		color: black;
+		color: white;
 		font-family: 'Source Sans Pro', sans-serif;
 		font-size: 15pt;
 		font-weight: 300 !important;
@@ -105,7 +105,7 @@
 		-ms-transform: translate3d(0,0,0);
 		transform: translate3d(0,0,0);
 		/* Set your background with this */
-		background: #FFFFFF url("images/bg.jpg") bottom left;
+		background: #348cb2 url("images/bg.jpg") bottom left;
 		background-repeat: repeat-x;
 		height: 100%;
 		left: 0;
