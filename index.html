@@ -1,55 +1,464 @@
-<!DOCTYPE HTML>
-<!--
-	Aerial by HTML5 UP
-	html5up.net | @n33co
-	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
--->
-<html>
-	<head>
-		<title>Niko Yaitanes</title>
-		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
-		<meta name="description" content="" />
-		<meta name="keywords" content="" />
-		<!--[if lte IE 8]><script src="css/ie/html5shiv.js"></script><![endif]-->
-		<script src="js/skel.min.js"></script>
-		<script src="js/init.js"></script>
-		<noscript>
-			<link rel="stylesheet" href="css/skel.css" />
-			<link rel="stylesheet" href="css/style.css" />
-			<link rel="stylesheet" href="css/style-wide.css" />
-			<link rel="stylesheet" href="css/style-noscript.css" />
-		</noscript>
-		<!--[if lte IE 9]><link rel="stylesheet" href="css/ie/v9.css" /><![endif]-->
-		<!--[if lte IE 8]><link rel="stylesheet" href="css/ie/v8.css" /><![endif]-->
-	</head>
-	<body class="loading">
-		<div id="wrapper">
-			<div id="bg"></div>
-			<div id="overlay"></div>
-			<div id="main">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Niko Yaitanes Portfolio</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      scroll-behavior: smooth;
+    }
+    body {
+      margin: 0;
+      font-family: 'Helvetica Neue', sans-serif;
+      color: #222;
+    }
+    header {
+      background: url('../../Unnamed Site 2/miami-bg-2.png') no-repeat center center/cover;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 20px;
+      position: relative; /* added for hamburger positioning */
+    }
+    header h1 {
+      font-size: 4rem;
+      margin: 0;
+      color: white;
+      text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+    }
+    header h2 {
+      font-size: 1.5rem;
+      margin: 10px 0 20px;
+      color: white;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.4);
+    }
 
-				<!-- Header -->
-					<header id="header">
-						<h1>Niko Yaitanes</h1>
-						<p>Digital Marketing &nbsp;&bull;&nbsp; Graphic Design &nbsp;&bull;&nbsp; Caffeine Fiend</p>
-						<strong><h2 id="portfoliopage"> <a href="https://nikoyaitanes.com/portfoliopage/">Click here to enter portfolio. </a> </strong> </h2>
-						<nav>
-							<ul>
-								<li><a href="https://www.linkedin.com/in/nikoyaitanes/" class="icon fa-linkedin"><span class="label">LinkedIn</span></a></li>
-								<li><a href="mailto:nyaitanes828@gmail.com" class="icon fa-envelope-o"><span class="label">Email</span></a></li>
-								<li><a href="Yaitanes_Niko_Resume_2023-web.pdf" class="icon fa-file-pdf-o"><span class="label">Resumé</span></a></li>
-								<li><a href="#" class="icon fa-camera"><span class="label">Photography</span></a></li>
-								<li><a href="https://www.instagram.com/nikoyaitanes" class="icon fa-address-card-o"><span class="label">Contact </span></a></li>
-							</ul>
-						</nav>
-					</header>
+    /* =========================
+       HAMBURGER MENU (added)
+    ========================= */
+    .hamburger {
+      position: absolute;
+      top: 22px;
+      right: 22px;
+      width: 46px;
+      height: 46px;
+      border-radius: 999px;
+      border: none;
+      background-color: rgba(0,0,0,0.8);
+      color: white;
+      cursor: pointer;
+      z-index: 1200;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.3s ease;
+    }
+    .hamburger:hover {
+      background-color: #333;
+    }
+    .hamburger-lines {
+      width: 18px;
+      height: 14px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .hamburger-lines span {
+      display: block;
+      height: 2px;
+      width: 100%;
+      background: #fff;
+      border-radius: 2px;
+    }
 
-				<!-- Footer -->
-					<footer id="footer">
-						<span class="copyright">&copy; Niko Yaitanes 2019. Design adapted from: <a href="http://html5up.net">HTML5 UP</a>.</span>
-					</footer>
-				
-			</div>
-		</div>
-	</body>
+    .menu-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.55);
+      display: none;
+      z-index: 1100;
+    }
+    .menu-overlay.open {
+      display: block;
+    }
+
+    .menu-panel {
+      position: fixed;
+      top: 82px;
+      right: 22px;
+      width: min(320px, calc(100vw - 44px));
+      background: rgba(255,255,255,0.98);
+      border-radius: 18px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+      padding: 10px;
+      display: none;
+      z-index: 1201;
+      text-align: left;
+    }
+    .menu-panel.open {
+      display: block;
+    }
+    .menu-panel a {
+      display: block;
+      padding: 12px 14px;
+      border-radius: 12px;
+      text-decoration: none;
+      color: #000;
+      font-size: 0.95rem;
+      transition: background 0.2s ease;
+    }
+    .menu-panel a:hover {
+      background: #f2f2f2;
+    }
+
+    .nav-buttons {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: center;
+      position: sticky;
+      top: 0;
+      background: ;
+      padding: 10px;
+      z-index: 100;
+    }
+    .nav-buttons button {
+      padding: 10px 20px;
+      font-size: 1rem;
+      border: none;
+      border-radius: 30px;
+      cursor: pointer;
+      background-color: rgba(0,0,0,0.8);
+      color: white;
+      transition: background 0.3s ease;
+    }
+    .nav-buttons button:hover {
+      background-color: #333;
+    }
+    section {
+      padding: 80px 20px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    section h3 {
+      font-size: 2rem;
+      margin-bottom: 10px;
+    }
+    section p {
+      line-height: 1.6;
+    }
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 15px;
+      margin-top: 20px;
+    }
+    .gallery-item {
+      text-align: center;
+    }
+    .gallery-item img {
+      width: 100%;
+      cursor: pointer;
+      border-radius: 8px;
+      transition: transform 0.2s;
+    }
+    .gallery-item img:hover {
+      transform: scale(1.03);
+    }
+    .caption {
+      font-size: 0.9rem;
+      color: #666;
+      margin-top: 8px;
+    }
+    .see-more {
+      text-align: center;
+      margin-top: 30px;
+    }
+    .see-more a {
+      display: inline-block;
+      padding: 10px 20px;
+      background: #000;
+      color: #fff;
+      border-radius: 30px;
+      text-decoration: none;
+      transition: background 0.3s ease;
+    }
+    .see-more a:hover {
+      background: #333;
+    }
+    #lightbox {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.8);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+    #lightbox img {
+      max-width: 90%;
+      max-height: 80%;
+      border-radius: 10px;
+    }
+    .jump-top {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: #000;
+      color: #fff;
+      padding: 10px 15px;
+      border-radius: 30px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      z-index: 1000;
+    }
+    footer {
+      text-align: center;
+      padding: 40px;
+      font-size: 0.9rem;
+      background: #eee;
+    }
+    @media (max-width: 600px) {
+      header h1 {
+        font-size: 2.5rem;
+      }
+      header h2 {
+        font-size: 1.2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Hamburger overlay + menu (added) -->
+  <div class="menu-overlay" id="menuOverlay"></div>
+  <nav class="menu-panel" id="menuPanel" aria-label="Site menu">
+    <a href="#about">About</a>
+    <a href="#photography">Photography</a>
+    <a href="#design">Design</a>
+    <a href="#social">Social Media</a>
+    <a href="#video">Videography</a>
+    <a href="#ai">AI</a>
+  </nav>
+
+  <header id="top">
+    <!-- Hamburger button (added) -->
+    <button class="hamburger" id="hamburgerBtn" aria-label="Open menu" type="button">
+      <span class="hamburger-lines" aria-hidden="true">
+        <span></span><span></span><span></span>
+      </span>
+    </button>
+
+    <h1>NIKO YAITANES</h1>
+    <h2>Creative Direction · Digital Strategy · Visual Storytelling&nbsp;· AI Strategy&nbsp;</h2>
+    <div class="nav-buttons">
+      <button onclick="scrollToSection('about')">About</button>
+      <button onclick="scrollToSection('photography')">Photography</button>
+      <button onclick="scrollToSection('design')">Design</button>
+      <button onclick="scrollToSection('social')">Social Media</button>
+      <button onclick="scrollToSection('video')">Videography</button>
+      <button onclick="scrollToSection('ai')">AI</button>
+    </div>
+  </header>
+
+  <section id="about">
+    <h3>ABOUT ME</h3>
+    <p>Hi, I'm Niko Yaitanes—a creative professional with a passion for media, visual storytelling, brand strategy, and digital innovation. Media is at the forefront of who I am. I inject inspiration from media consumption into everything I create, leveraging trends to amplify content,  ensuring quality outcomes, and quantifiable results.&nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</p>
+    <p>I have a Bachelor of Science in Communication with a Concentration in Cinema and Media Studies from Boston University. I  have a developer's certifcation in Responsive Web Design (300 Hour Certification, HTML and CSS).&nbsp; &nbsp; &nbsp;</p>
+<p>When I'm not working, I am a coffee fiend,    enjoy traveling, and the ocean. I also have a New Music Friday playlist that I update weekly.&nbsp;</p>
+    <p>Below are some  examples of multimedia creation, design strategy,  creative direction, and organizational structuring/efficiency.&nbsp; Please refer to the above navigation to jump to a specific area.&nbsp; &nbsp; &nbsp;</p>
+  </section>
+
+  <section id="photography">
+    <h3>PHOTOGRAPHY&nbsp;</h3>
+    <p>Sample photography work: live events, news coverage, and notable figures</p>
+    <div class="gallery">
+      <div class="gallery-item"> <a href="../../Unnamed Site 2/links/photography-examples-1.jpg"><img src="../../Unnamed Site 2/links/photography-examples-1.jpg" alt="Skincare campaign in natural light"></a>
+        <p class="caption">Jennifer Garner and Jason Bateman honored at the Hasty Pudding Ceremony</p>
+      </div>
+      <div class="gallery-item">
+        <img src="../../Unnamed Site 2/links/photography-examples-2.jpg" alt="Portrait series in downtown Boston">
+        <p class="caption">Harvard commencement  photo&nbsp;</p>
+      </div>
+      <div class="gallery-item">
+        <img src="../../Unnamed Site 2/links/photography-examples-3.jpg" alt="Editorial concept shoot – symmetry and shadows">
+        <p class="caption">Harvard University President Alan M. Garber</p>
+      </div>
+		<div class="gallery-item"> <a href="../../Unnamed Site 2/links/photography-examples-1.jpg"><img src="../../Unnamed Site 2/links/photography-examples-4.jpg" alt="Skincare campaign in natural light"></a>
+        <p class="caption">Michelle Yeoh speaking at Harvard Law School</p>
+      </div>
+      <div class="gallery-item">
+        <img src="../../Unnamed Site 2/links/photography-examples-6.jpg" alt="Portrait series in downtown Boston">
+        <p class="caption">Live concert example- Charlotte Lawrence in Boston, MA</p>
+      </div>
+      <div class="gallery-item">
+        <img src="../../Unnamed Site 2/links/photography-examples-5.jpg" alt="Editorial concept shoot – symmetry and shadows">
+        <p class="caption">John Harvard statue used as art for online article for Harvard Magazine&nbsp; &nbsp;&nbsp;</p>
+      </div>
+    </div>
+    <div class="see-more">
+      <a href="../../Unnamed Site 2/Photography page.html">See More Photography →</a>
+    </div>
+  </section>
+
+  <section id="design">
+    <h3>DESIGN</h3>
+    <p>Digital, print, branding, and experimental graphic design projects.</p>
+    <div class="gallery">
+      <div class="gallery-item">
+        <img src="../../Unnamed Site 2/links/design-examples-1.jpg" alt="Minimalist event flyer for art show">
+        <p class="caption">Editorial design: montage accompanying an article that ran in print and online for <em>Harvard Magazine&nbsp; &nbsp;</em></p>
+      </div>
+      <div class="gallery-item">
+        <img src="../../Unnamed Site 2/links/design-examples-2-1.jpg" alt="Brand identity mockup for tech startup">
+        <p class="caption">Editorial design: an abstract montage for a Harvard Magazine article on Epstein-Barr virus&nbsp; as the cause of MS. This was the top story of the year, with over a million views.&nbsp; &nbsp;</p>
+      </div>
+		<div class="gallery-item">
+        <img src="../../Unnamed Site 2/links/design-examples-3.jpg" alt="Brand identity mockup for tech startup">
+        <p class="caption">Editorial design: an abstract montage for a Harvard Magazine article on Epstein-Barr virus&nbsp; as the cause of MS. This was the top story of the year, with over a million views.&nbsp; &nbsp;</p>
+      </div>
+		<div class="gallery-item">
+        <img src="../../Unnamed Site 2/links/design-examples-4.jpg" alt="Brand identity mockup for tech startup">
+        <p class="caption">Editorial design: an abstract montage for a Harvard Magazine article on Epstein-Barr virus&nbsp; as the cause of MS. This was the top story of the year, with over a million views.&nbsp; &nbsp;</p>
+      </div>
+		<div class="gallery-item">
+        <img src="../../Unnamed Site 2/links/design-examples-6.jpg" alt="Brand identity mockup for tech startup">
+        <p class="caption">Editorial design: an abstract montage for a Harvard Magazine article on Epstein-Barr virus&nbsp; as the cause of MS. This was the top story of the year, with over a million views.&nbsp; &nbsp;</p>
+      </div>
+	  <div class="gallery-item">
+        <img src="../../Unnamed Site 2/links/design-examples-7.jpg" alt="Brand identity mockup for tech startup">
+        <p class="caption">Restore Body Balance Book cover: I designed the book's typography, the cover, and the layout of its accompanying journal.&nbsp; &nbsp;</p>
+      </div>
+    </div>
+    <div class="see-more">
+      <a href="../../Unnamed Site 2/Design page.html">See More Design →</a>
+    </div>
+</section>
+
+  <section id="social">
+    <h3>SOCIAL MEDIA&nbsp;</h3>
+    <p>Campaign strategy, content creation, and platform storytelling.</p>
+	  <div class="gallery">
+	  <div class="gallery-item">
+        <img src="../../Unnamed Site 2/links/social-examples-1.png" alt="Minimalist event flyer for art show">
+        <p class="caption">Text-based infographic to convert readers from Instagram to a<em> Harvard Magazine </em>article. It broke the record for the most click throughs for Instagram from a post for the account.&nbsp;&nbsp;</p>
+      </div>
+      <div class="gallery-item">
+        <img src="../../Unnamed Site 2/links/social-examples-2.png" alt="Brand identity mockup for tech startup">
+        <p class="caption">Text-based infographic with the goal of encouraging conversation surrounding an article&nbsp; &nbsp;&nbsp;</p>
+      </div>
+		<div class="gallery-item">
+        <img src="../../Unnamed Site 2/links/social-examples-3.png" alt="Brand identity mockup for tech startup">
+        <p class="caption">Text-based infographic with the goal of informing an engaged Harvard alumni audience</p>
+    </div></div>
+    <div class="see-more">
+      <a href="../../Unnamed Site 2/social.html">See More Social Media →</a>
+    </div>
+  </section>
+
+  <section id="video">
+    <h3>VIDEOGRAPHY</h3>
+    <p>Motion graphics, reels, and multimedia storytelling.</p>
+	  <div class="gallery">
+	  <div class="gallery-item">
+        <img src="../../Unnamed Site 2/links/video-examples-2-copy.jpg" alt="Minimalist event flyer for art show">
+        <p class="caption">Virtual tour of the Gibson House Museum: shooting, editing, pre/post production, and packaging for YouTube&nbsp;</p>
+      </div>
+      <div class="gallery-item">
+        <img src="../../Unnamed Site 2/links/video-examples-1 copy.png" alt="Brand identity mockup for tech startup">
+        <p class="caption">Video for <em>Harvard Magazine</em>: the Life of a Harvard Ethnobotanist. Shooting, editing, pre/post production, and packaging for YouTube  &nbsp;</p>
+      </div>
+		<div class="gallery-item">  <div style="padding:177.78% 0 0 0;position:relative;"><iframe src="https://player.vimeo.com/video/1151356311?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" frameborder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share" referrerpolicy="strict-origin-when-cross-origin" style="position:absolute;top:0;left:0;width:100%;height:100%;" title="Paris in 30 Seconds"></iframe></div><script src="https://player.vimeo.com/api/player.js"></script>
+        </div>
+    </div></div>
+    <div class="see-more">
+      <a href="../../Unnamed Site 2/videography.html">See More Videography →</a>
+    </div>
+  </section>
+
+  <section id="ai">
+    <h3>ARTIFICIAL INTELLIGENCE (AI) STRATEGY</h3>
+    <p>My interest in AI is  focused on reducing&nbsp;repetitive clerical tasks and improving efficiencies. I created several custom GPTs for routine work at Harvard Magazine, saving hours of work each week for myself and colleagues. Additionally, I keep cybersecurity in mind, and have worked with AI models such as ChatGPT to create scripts and applications for offline processing.&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</p>
+    <div class="see-more">
+      <a href="../../Unnamed Site 2/GPT page.html">See  AI Projects →</a>
+    </div>
+  </section>
+
+  <div id="lightbox" onclick="closeLightbox()">
+    <img id="lightbox-img" src="" alt="Expanded View" />
+  </div>
+
+  <div class="jump-top" onclick="scrollToSection('top')">↑ Top</div>
+
+  <footer>
+    &copy; Niko Yaitanes 2025
+  </footer>
+
+  <script>
+    function scrollToSection(id) {
+      if (id === 'top') {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else {
+        document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+    function openLightbox(img) {
+      document.getElementById('lightbox-img').src = img.src;
+      document.getElementById('lightbox').style.display = 'flex';
+    }
+    function closeLightbox() {
+      document.getElementById('lightbox').style.display = 'none';
+    }
+
+    /* =========================
+       Hamburger menu JS (added)
+    ========================= */
+    const hamburgerBtn = document.getElementById('hamburgerBtn');
+    const menuPanel = document.getElementById('menuPanel');
+    const menuOverlay = document.getElementById('menuOverlay');
+
+    function openMenu(){
+      menuPanel.classList.add('open');
+      menuOverlay.classList.add('open');
+    }
+    function closeMenu(){
+      menuPanel.classList.remove('open');
+      menuOverlay.classList.remove('open');
+    }
+    function toggleMenu(){
+      const isOpen = menuPanel.classList.contains('open');
+      if (isOpen) closeMenu();
+      else openMenu();
+    }
+
+    hamburgerBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      toggleMenu();
+    });
+
+    menuOverlay.addEventListener('click', () => {
+      closeMenu();
+    });
+
+    // Close when clicking a menu link
+    Array.from(menuPanel.querySelectorAll('a')).forEach(a => {
+      a.addEventListener('click', () => {
+        closeMenu();
+      });
+    });
+
+    // ESC to close
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeMenu();
+    });
+  </script>
+</body>
 </html>
