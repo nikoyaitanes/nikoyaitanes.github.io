@@ -1,0 +1,773 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Case Study — Custom GPTs for Editorial Efficiency</title>
+
+  <!-- Match the “other pages” system: Atkinson Hyperlegible Mono + pixel dust + chips -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg:#fbfbfb;
+      --fg:#0a0a0a;
+      --muted:#6a6a6a;
+      --rule:#e8e8e8;
+      --radius:18px;
+      --max:1120px;
+
+      --shadow-sm: 0 10px 24px rgba(0,0,0,.06);
+      --shadow-md: 0 18px 44px rgba(0,0,0,.10);
+      --shadow-in: inset 0 1px 0 rgba(255,255,255,.8);
+    }
+
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; }
+
+    body{
+      margin:0;
+      background:
+        radial-gradient(1200px 600px at 14% 8%, rgba(0,0,0,.05), transparent 55%),
+        radial-gradient(900px 520px at 90% 12%, rgba(0,0,0,.035), transparent 55%),
+        linear-gradient(var(--bg), var(--bg));
+      color:var(--fg);
+      font-family: "Atkinson Hyperlegible Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: 15.5px;
+      line-height: 1.7;
+      letter-spacing: 0.06px;
+      overflow-x:hidden;
+    }
+
+    /* Pixel dust */
+    .pixels{
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      opacity: .55;
+      mix-blend-mode: multiply;
+      filter: contrast(1.05);
+      background-image: radial-gradient(circle, rgba(0,0,0,.10) 1px, transparent 1.2px);
+      background-size: 28px 28px;
+      animation: drift 14s linear infinite;
+    }
+    @keyframes drift{
+      from{ transform: translate3d(0,0,0); }
+      to  { transform: translate3d(-56px, 28px, 0); }
+    }
+    @media (prefers-reduced-motion: reduce){
+      .pixels{ animation:none; }
+      *{ scroll-behavior:auto !important; transition:none !important; }
+    }
+
+    .wrap{
+      position: relative;
+      z-index: 1;
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: clamp(20px, 3.5vw, 52px);
+    }
+
+    header{
+      padding: 14px 0 18px;
+      margin-bottom: 12px;
+      border-bottom: 1px solid rgba(0,0,0,.08);
+    }
+
+    .kicker{
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: var(--muted);
+      margin: 0 0 10px;
+      display:flex;
+      align-items:center;
+      gap:10px;
+    }
+    .kicker:before{
+      content:"";
+      width: 34px;
+      height: 1px;
+      background: rgba(0,0,0,.25);
+      display:block;
+    }
+
+    h1{
+      font-size: clamp(28px, 3.0vw, 42px);
+      line-height: 1.12;
+      margin: 0 0 10px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .muted{ color: var(--muted); }
+
+    /* Filter bar (chips) */
+    .toolbar{
+      display:flex;
+      flex-wrap:wrap;
+      gap: 10px;
+      align-items:center;
+      justify-content:space-between;
+      margin: 14px 0 0;
+    }
+
+    .chips{
+      display:flex;
+      flex-wrap:wrap;
+      gap: 10px;
+      align-items:center;
+    }
+
+    .chip{
+      border: 1px solid rgba(0,0,0,.12);
+      border-radius: 999px;
+      padding: 9px 12px;
+      background: rgba(255,255,255,.9);
+      box-shadow: 0 8px 18px rgba(0,0,0,.06);
+      cursor:pointer;
+      user-select:none;
+      font-size: 13px;
+      transition: transform .16s ease, box-shadow .16s ease, background .16s ease;
+    }
+    .chip:hover{
+      transform: translateY(-1px);
+      box-shadow: 0 12px 22px rgba(0,0,0,.10);
+    }
+    .chip[aria-pressed="true"]{
+      background: rgba(0,0,0,.92);
+      color: #fff;
+      border-color: rgba(0,0,0,.35);
+      box-shadow: 0 14px 28px rgba(0,0,0,.16);
+    }
+
+    .count{
+      color: var(--muted);
+      font-size: 13px;
+      white-space: nowrap;
+    }
+
+    /* Cards */
+    .grid{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+      margin: 16px 0 0;
+    }
+    @media (min-width: 880px){
+      .grid{ grid-template-columns: 1fr 1fr; }
+    }
+
+    .card{
+      border: 1px solid rgba(0,0,0,.10);
+      border-radius: var(--radius);
+      padding: 16px 16px 10px;
+      background: rgba(255,255,255,.92);
+      box-shadow: var(--shadow-sm), var(--shadow-in);
+      backdrop-filter: blur(6px);
+      transform: translateZ(0);
+      transition: transform .18s ease, box-shadow .18s ease;
+    }
+    .card:hover{
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md), var(--shadow-in);
+    }
+
+    .card h2{
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      margin: 0 0 10px;
+      color: var(--muted);
+      font-weight: 650;
+    }
+
+    /* Pills */
+    .statRow{
+      display:flex;
+      flex-wrap:wrap;
+      gap: 10px;
+      margin-top: 12px;
+    }
+    .pill{
+      border: 1px solid rgba(0,0,0,.12);
+      border-radius: 999px;
+      padding: 9px 12px;
+      font-size: 13px;
+      color: var(--fg);
+      background: rgba(255,255,255,.9);
+      box-shadow: 0 8px 18px rgba(0,0,0,.06);
+      white-space:nowrap;
+    }
+    .pill b{ font-weight: 700; }
+
+    /* Expanders (same visual system as tiles/cards) */
+    .expander{
+      border: 1px solid rgba(0,0,0,.10);
+      border-radius: var(--radius);
+      padding: 14px 14px 8px;
+      background: rgba(255,255,255,.92);
+      box-shadow: var(--shadow-sm), var(--shadow-in);
+      backdrop-filter: blur(6px);
+      transform: translateZ(0);
+      transition: transform .18s ease, box-shadow .18s ease;
+      overflow:hidden;
+    }
+    .expander:hover{
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md), var(--shadow-in);
+    }
+
+    details{ padding: 0; }
+    summary{
+      list-style:none;
+      cursor:pointer;
+      user-select:none;
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap: 14px;
+      padding: 2px 2px 10px;
+      font-weight: 700;
+      font-size: 16px;
+      line-height: 1.25;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+    }
+    summary::-webkit-details-marker{ display:none; }
+
+    /* dotted underline cue */
+    summary .label{
+      text-decoration-line: underline;
+      text-decoration-style: dotted;
+      text-underline-offset: 7px;
+      text-decoration-thickness: 1px;
+    }
+
+    summary .chev{
+      flex: 0 0 auto;
+      width: 34px;
+      height: 34px;
+      margin-top: 0px;
+      border: 1px solid rgba(0,0,0,.12);
+      border-radius: 999px;
+      display:grid;
+      place-items:center;
+      background: rgba(255,255,255,.85);
+      box-shadow: 0 8px 18px rgba(0,0,0,.06);
+      transition: transform .18s ease, box-shadow .18s ease;
+    }
+    summary .chev:before{
+      content:"";
+      width: 9px;
+      height: 9px;
+      border-right: 2px solid var(--fg);
+      border-bottom: 2px solid var(--fg);
+      transform: rotate(45deg);
+      display:block;
+      margin-top: -1px;
+    }
+    details[open] summary .chev{
+      transform: rotate(-180deg);
+      box-shadow: 0 12px 22px rgba(0,0,0,.10);
+    }
+
+    .content{
+      padding: 2px 2px 10px;
+      color: var(--fg);
+    }
+
+    p{ margin: 0 0 12px; }
+    ul{ margin: 0 0 12px; padding-left: 18px; }
+    li{ margin: 6px 0; }
+
+    footer{
+      border-top: 1px solid rgba(0,0,0,.10);
+      margin-top: 24px;
+      padding-top: 18px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    a{
+      color: var(--fg);
+      text-decoration-line: underline;
+      text-decoration-style: dotted;
+      text-underline-offset: 6px;
+    }
+
+    .is-hidden{ display:none; }
+	  /* --- Top nav: Back + Hamburger menu (no wording/content changes) --- */
+.topbar{
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  padding: 10px 0 12px;
+  margin-bottom: 10px;
+  backdrop-filter: blur(10px);
+}
+.topbar::before{
+  content:"";
+  position:absolute;
+  left:0; right:0; top:0; bottom:0;
+  background: rgba(251,251,251,.72);
+  border-bottom: 1px solid rgba(0,0,0,.08);
+  z-index:-1;
+}
+
+.navRow{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap: 12px;
+}
+
+.navLeft{
+  display:flex;
+  align-items:center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.btn{
+  border: 1px solid rgba(0,0,0,.12);
+  border-radius: 999px;
+  padding: 9px 12px;
+  background: rgba(255,255,255,.9);
+  box-shadow: 0 8px 18px rgba(0,0,0,.06), var(--shadow-in);
+  cursor:pointer;
+  user-select:none;
+  font-size: 13px;
+  display:inline-flex;
+  align-items:center;
+  gap: 8px;
+  transition: transform .16s ease, box-shadow .16s ease, background .16s ease;
+}
+.btn:hover{
+  transform: translateY(-1px);
+  box-shadow: 0 12px 22px rgba(0,0,0,.10), var(--shadow-in);
+}
+.btn:active{ transform: translateY(0); }
+.btn:focus-visible{
+  outline: 2px dotted rgba(0,0,0,.55);
+  outline-offset: 6px;
+}
+
+.icon{
+  width: 16px;
+  height: 16px;
+  display:inline-block;
+  position: relative;
+}
+
+/* Back icon */
+.icon-back::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  margin:auto;
+  width: 8px;
+  height: 8px;
+  border-left: 2px solid var(--fg);
+  border-bottom: 2px solid var(--fg);
+  transform: rotate(45deg);
+}
+
+/* Hamburger icon */
+.burger{
+  width: 18px;
+  height: 12px;
+  display:grid;
+  gap: 3px;
+}
+.burger span{
+  height: 2px;
+  background: var(--fg);
+  border-radius: 2px;
+  opacity: .92;
+}
+
+.menuWrap{ position: relative; }
+
+/* Click-outside overlay */
+.menuOverlay{
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.12);
+  backdrop-filter: blur(2px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .18s ease;
+  z-index: 19;
+}
+.menuOverlay.open{
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Panel */
+.menuPanel{
+  position: absolute;
+  right: 0;
+  top: calc(100% + 10px);
+  width: min(360px, calc(100vw - 40px));
+  border: 1px solid rgba(0,0,0,.12);
+  border-radius: 18px;
+  background: rgba(255,255,255,.94);
+  box-shadow: var(--shadow-md), var(--shadow-in);
+  backdrop-filter: blur(10px);
+  overflow:hidden;
+  transform-origin: top right;
+  transform: translateY(-6px) scale(.985);
+  opacity: 0;
+  pointer-events: none;
+  transition: transform .18s ease, opacity .18s ease;
+  z-index: 21;
+}
+.menuPanel.open{
+  transform: translateY(0) scale(1);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.menuHeader{
+  padding: 12px 14px;
+  border-bottom: 1px solid rgba(0,0,0,.08);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap: 10px;
+}
+.menuHeader .title{
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: var(--muted);
+  margin: 0;
+}
+
+.menuList{
+  margin: 0;
+  padding: 8px;
+  list-style:none;
+  display:grid;
+  gap: 8px;
+}
+.menuItem a{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  border: 1px solid rgba(0,0,0,.10);
+  background: rgba(255,255,255,.88);
+  box-shadow: 0 8px 18px rgba(0,0,0,.06);
+  text-decoration: none;
+  color: var(--fg);
+  transition: transform .16s ease, box-shadow .16s ease;
+}
+.menuItem a:hover{
+  transform: translateY(-1px);
+  box-shadow: 0 12px 22px rgba(0,0,0,.10);
+}
+.menuItem .label{
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+.menuItem .meta{
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--muted);
+}
+
+@media (max-width: 520px){
+  .menuItem .meta{ display:none; }
+}
+
+  </style>
+</head>
+
+<body>
+  <div class="pixels" aria-hidden="true"></div>
+
+  <main class="wrap">
+	  <div class="menuOverlay" id="menuOverlay" aria-hidden="true"></div>
+
+<section class="topbar" aria-label="Site navigation">
+  <div class="navRow">
+    <div class="navLeft">
+      <button class="btn" type="button" id="backBtn" aria-label="Back">
+        <span class="icon icon-back" aria-hidden="true"></span>
+        Back
+      </button>
+    </div>
+
+    <div class="menuWrap">
+      <button class="btn" type="button" id="menuBtn" aria-label="Menu" aria-expanded="false" aria-controls="menuPanel">
+        <span class="burger" aria-hidden="true"><span></span><span></span><span></span></span>
+      </button>
+
+      <nav class="menuPanel" id="menuPanel" aria-label="Menu">
+        <div class="menuHeader">
+          <p class="title">Menu</p>
+          <button class="btn" type="button" id="closeMenuBtn" aria-label="Close menu">
+            Close
+          </button>
+        </div>
+
+         <ul class="menuList">
+          <li class="menuItem"><a href="portfolio_landing_page.html"><span class="label">About</span><span class="meta">About</span></a></li>
+          <li class="menuItem"><a href="Photography page.html"><span class="label">Photography</span><span class="meta">Photography</span></a></li>
+          <li class="menuItem"><a href="Design page.html"><span class="label">Design</span><span class="meta">Design</span></a></li>
+		  <li class="menuItem"><a href="social media page.html"><span class="label">Social Media Page</span><span class="meta">Social Media</span></a></li>
+          <li class="menuItem"><a href="videography page.html"><span class="label">Videography</span><span class="meta">Videography</span></a></li>
+          <li class="menuItem"><a href="GPT page.html"><span class="label">AI</span><span class="meta">AI</span></a></li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+</section>
+
+    <header>
+      <p class="kicker">Case Study</p>
+      <h1>Custom GPTs for Organizational Efficiency</h1>
+
+      <!-- Chips / filters for case studies (wording updated; all other text unchanged) -->
+      <div class="toolbar" aria-label="Case study selector">
+        <div class="chips" role="group" aria-label="Select case study">
+          <button class="chip" data-filter="cs1" aria-pressed="true" type="button">Case Study 01: Custom GPTs</button>
+          <button class="chip" data-filter="cs2" aria-pressed="false" type="button">Case Study 02: Offline Processing</button>
+        </div>
+        <div class="count" id="count">Viewing Case Study 01</div>
+      </div>
+
+      <!-- Case Study 01 (YOUR ORIGINAL WORDING — unchanged) -->
+      <section id="cs1" class="case" aria-label="Case Study 01" style="margin-top:14px;">
+        <div class="grid" aria-label="Quick context">
+          <div class="card">
+            <h2>Role / Organization</h2>
+            <p class="muted" style="margin-bottom:10px;">
+              <span><b style="color:var(--fg); font-weight:700;">Role:</b> Editorial &amp; Digital Strategy</span><br>
+              <span><b style="color:var(--fg); font-weight:700;">Organization:</b> Harvard Magazine</span>
+            </p>
+
+            <p class="muted" style="max-width: 70ch; margin: 0;">
+              I designed and deployed a suite of custom GPT tools to automate recurring editorial,
+              accessibility, research, SEO, and production workflows—reducing time spent on remedial tasks
+              while improving consistency and turnaround speed.
+            </p>
+
+            <div class="statRow" aria-label="Key outcomes">
+              <div class="pill"><b>70–80%</b> reduction in recurring production time</div>
+              <div class="pill"><b>10+ Custom Built GPT Solutions</b></div>
+              <div class="pill"><b>3–8 hours</b> saved per week (volume-dependent)</div>
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>Overview</h2>
+            <p>
+              <strong> The goal was not to replace editorial judgment or content creation, but to eliminate repetitive,
+              time-intensive steps that pull attention away from higher-value work. </strong>
+            </p>
+            <p>
+              A secondary goal was to help educate staff on SEO initiatives, alt text/accessibility standards,
+              and consistent organizational practices.
+            </p>
+            <h2 style="margin-top:16px;">Why it mattered</h2>
+            <p>
+              Repetitive tasks eat away at a small staff's bandwidth across a fast-paced newsroom.
+              The approach focused on discovery, building and testing custom solutions, and educating colleagues on how to incorporate these practices into their workflows.&nbsp;
+            </p>
+          </div>
+        </div>
+
+        <section class="expander" style="margin-top:14px;">
+          <details open>
+            <summary>
+              <span class="label">The problem: repetitive, remedial tasks</span>
+              <span class="chev" aria-hidden="true"></span>
+            </summary>
+            <div class="content">
+              <p class="muted">Digital media workflows often involve:</p>
+              <ul>
+                <li>Repetitive remedial tasks</li>
+                <li>Manual accessibility work (alt text, captions)</li>
+                <li>Time-consuming archival research</li>
+                <li>SEO strategies</li>
+                <li>Image processing and file standardization</li>
+              </ul>
+              <p>
+                Individually these tasks seem small—but collectively they consume hours each week and introduce friction,
+                inconsistency, and context switching.
+              </p>
+            </div>
+          </details>
+        </section>
+
+        <section class="expander" style="margin-top:14px;">
+          <details>
+            <summary>
+              <span class="label">The solution: a suite of custom GPTs</span>
+              <span class="chev" aria-hidden="true"></span>
+            </summary>
+            <div class="content">
+              <p>
+                I built <b>10+ custom GPTs</b>, each designed around a specific repeatable workflow and aligned to
+                Harvard Magazine’s editorial standards and accessibility guidelines.
+              </p>
+
+              <ul>
+                <li>Automated alt-text generation aligned with accessibility requirements</li>
+                <li>Video caption cleanup + transcription formatting</li>
+                <li>Email newsletter archival article discovery + thematic curation</li>
+                <li>News headline aggregation for weekly editorial use</li>
+                <li>HTML newsletter formatting</li>
+                <li>SEO title, URL, and metadata rewrite suggestions + scoring</li>
+                <li>Image-to-text conversion with formatting (bold/italics/underlines)</li>
+                <li>Web-ready image conversion with publication-specific naming conventions</li>
+              </ul>
+
+              <p class="muted">
+                Each GPT functions as a reusable tool embedded directly into daily editorial work.
+              </p>
+            </div>
+          </details>
+        </section>
+
+        <section class="expander" style="margin-top:14px;">
+          <details>
+            <summary>
+              <span class="label">Results &amp; impact</span>
+              <span class="chev" aria-hidden="true"></span>
+            </summary>
+            <div class="content">
+              <p class="muted">Conservative estimates based on standard workflows:</p>
+              <ul>
+                <li><b>Average time savings:</b> 80–85% per task</li>
+                <li><b>15–40 minutes</b> → <b>2–5 minutes</b> for tasks that were previously manual</li>
+                <li><b>Estimated 3–8 hours saved</b> per week (depending on production volume)</li>
+              </ul>
+
+              <p class="muted">Beyond time savings:</p>
+              <ul>
+                <li>Greater consistency in accessibility and formatting</li>
+                <li>Faster turnaround without quality tradeoffs</li>
+                <li>Reduced context switching and manual error</li>
+                <li>Scalable infrastructure that improves as volume increases</li>
+              </ul>
+            </div>
+          </details>
+        </section>
+
+        <section class="expander" style="margin-top:14px;">
+          <details>
+            <summary>
+              <span class="label">Summary</span>
+              <span class="chev" aria-hidden="true"></span>
+            </summary>
+            <div class="content">
+              <p>
+                This project demonstrates how AI can benefit organizational infrastructure, not just deliver  one-off productivity wins. By identifying repetitive remedial tasks, and designing GPTs around them, I was able to significantly reduce operational bottlenecks.
+              </p>
+              <p>
+                These tools and methods can be adapted to any digital content-heavy organization prioritizing quality, accessibility, and speed.
+              </p>
+            </div>
+          </details>
+        </section>
+      </section>
+
+      <!-- Case Study 02 (placeholder shell — DOES NOT change your existing wording) -->
+      <section id="cs2" class="case is-hidden" aria-label="Case Study 02" style="margin-top:14px;">
+        <div class="card">
+          <h2>Case Study 02</h2>
+          <p class="muted" style="margin:0;">
+            Add your second case study content here (kept separate so the filter buttons can switch between them).
+          </p>
+        </div>
+      </section>
+    </header>
+
+    <footer>
+      <p style="margin:0;">
+        If you’d like to see examples of individual GPTs or discuss how similar systems could be built for other teams
+        or publications, feel free to reach out.
+      </p>
+      <!-- Optional: replace with your link -->
+      <!-- <p style="margin:10px 0 0;"><a href="mailto:you@domain.com">you@domain.com</a></p> -->
+    </footer>
+  </main>
+
+  <script>
+    // Case Study chip toggles
+    const chips = Array.from(document.querySelectorAll(".chip"));
+    const countEl = document.getElementById("count");
+    const cs1 = document.getElementById("cs1");
+    const cs2 = document.getElementById("cs2");
+
+    function setPressed(activeBtn){
+      chips.forEach(btn => btn.setAttribute("aria-pressed", btn === activeBtn ? "true" : "false"));
+    }
+
+    function showCase(which){
+      const show1 = which === "cs1";
+      cs1.classList.toggle("is-hidden", !show1);
+      cs2.classList.toggle("is-hidden", show1);
+      countEl.textContent = show1 ? "Viewing Case Study 01" : "Viewing Case Study 02";
+    }
+
+    chips.forEach(btn => {
+      btn.addEventListener("click", () => {
+        const which = btn.getAttribute("data-filter");
+        setPressed(btn);
+        showCase(which);
+      });
+    });
+
+    // init
+    showCase("cs1");
+	    // Back + menu interactions
+  const backBtn = document.getElementById("backBtn");
+  const menuBtn = document.getElementById("menuBtn");
+  const closeMenuBtn = document.getElementById("closeMenuBtn");
+  const menuPanel = document.getElementById("menuPanel");
+  const menuOverlay = document.getElementById("menuOverlay");
+
+  function openMenu(){
+    menuPanel.classList.add("open");
+    menuOverlay.classList.add("open");
+    menuBtn.setAttribute("aria-expanded", "true");
+  }
+
+  function closeMenu(){
+    menuPanel.classList.remove("open");
+    menuOverlay.classList.remove("open");
+    menuBtn.setAttribute("aria-expanded", "false");
+  }
+
+  backBtn?.addEventListener("click", () => {
+    if (window.history.length > 1) window.history.back();
+    else window.location.href = "about";
+  });
+
+  menuBtn?.addEventListener("click", () => {
+    const isOpen = menuPanel.classList.contains("open");
+    isOpen ? closeMenu() : openMenu();
+  });
+
+  closeMenuBtn?.addEventListener("click", closeMenu);
+  menuOverlay?.addEventListener("click", closeMenu);
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") closeMenu();
+  });
+
+  </script>
+</body>
+</html>
