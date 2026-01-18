@@ -5,37 +5,41 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Niko Yaitanes Portfolio</title>
   <style>
-    * { box-sizing: border-box; scroll-behavior: smooth; }
-    body { margin: 0; font-family: 'Helvetica Neue', sans-serif; color: #222; }
-
+    * {
+      box-sizing: border-box;
+      scroll-behavior: smooth;
+    }
+    body {
+      margin: 0;
+      font-family: 'Helvetica Neue', sans-serif;
+      color: #222;
+    }
     header {
       background: url('links/miami-bg-2.png') no-repeat center center/cover;
-      min-height: 100vh;
+      height: 100vh;
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
       text-align: center;
       padding: 20px;
-      position: relative;
+      position: relative; /* added for hamburger positioning */
     }
-
     header h1 {
       font-size: 4rem;
       margin: 0;
       color: white;
       text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
-      letter-spacing: 0.02em;
     }
     header h2 {
       font-size: 1.5rem;
-      margin: 10px 0 18px;
+      margin: 10px 0 20px;
       color: white;
       text-shadow: 1px 1px 2px rgba(0,0,0,0.4);
     }
 
     /* =========================
-       HAMBURGER MENU
+       HAMBURGER MENU (added)
     ========================= */
     .hamburger {
       position: absolute;
@@ -54,7 +58,9 @@
       justify-content: center;
       transition: background 0.3s ease;
     }
-    .hamburger:hover { background-color: #333; }
+    .hamburger:hover {
+      background-color: #333;
+    }
     .hamburger-lines {
       width: 18px;
       height: 14px;
@@ -77,7 +83,9 @@
       display: none;
       z-index: 1100;
     }
-    .menu-overlay.open { display: block; }
+    .menu-overlay.open {
+      display: block;
+    }
 
     .menu-panel {
       position: fixed;
@@ -92,7 +100,9 @@
       z-index: 1201;
       text-align: left;
     }
-    .menu-panel.open { display: block; }
+    .menu-panel.open {
+      display: block;
+    }
     .menu-panel a {
       display: block;
       padding: 12px 14px;
@@ -102,121 +112,89 @@
       font-size: 0.95rem;
       transition: background 0.2s ease;
     }
-    .menu-panel a:hover { background: #f2f2f2; }
+    .menu-panel a:hover {
+      background: #f2f2f2;
+    }
 
-    /* =========================
-       HEADER NAV BUTTONS
-       - Mobile: swipeable row
-       - Desktop: centered wrap
-    ========================= */
-    /* HEADER NAV BUTTONS – two-line mobile layout */
-.nav-buttons{
-  display:flex;
-  gap:10px;
-  justify-content:center;
-  flex-wrap:wrap;          /* allow wrapping */
-  width:100%;
-  max-width:900px;
-  padding:10px;
-  background:transparent;
-}
-
-/* Button pills */
-.nav-buttons button{
-  padding:10px 16px;
-  font-size:1rem;
-  border:none;
-  border-radius:999px;
-  cursor:pointer;
-  background-color:rgba(0,0,0,0.8);
-  color:#fff;
-  white-space:nowrap;
-}
-
-/* MOBILE: force two balanced rows */
-@media (max-width:600px){
-  .nav-buttons{
-    max-width:360px;       
-    margin:0 auto;
-  }
-
-  .nav-buttons button{
-    flex:1 1 calc(50% - 10px); /* 2 per row */
-    text-align:center;
-  }
-}
-
+    .nav-buttons {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: center;
+      position: sticky;
+      top: 0;
+      background: ;
+      padding: 10px;
+      z-index: 100;
+    }
+    .nav-buttons button {
+      padding: 10px 20px;
+      font-size: 1rem;
+      border: none;
+      border-radius: 30px;
+      cursor: pointer;
+      background-color: rgba(0,0,0,0.8);
+      color: white;
+      transition: background 0.3s ease;
+    }
+    .nav-buttons button:hover {
+      background-color: #333;
+    }
     section {
       padding: 80px 20px;
       max-width: 900px;
       margin: 0 auto;
     }
-    section h3 { font-size: 2rem; margin-bottom: 10px; }
-    section p { line-height: 1.6; }
-
-    /* =========================
-       MOBILE-FIRST GALLERY GRID
-       Phones: 2 columns (so 6 items = 3 rows x 2 columns)
-       Tablets: 3 columns
-       Desktop: auto-fit
-    ========================= */
+    section h3 {
+      font-size: 2rem;
+      margin-bottom: 10px;
+    }
+    section p {
+      line-height: 1.6;
+    }
     .gallery {
       display: grid;
-      gap: 14px;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 15px;
       margin-top: 20px;
-
-      /* default (mobile) = 2 columns */
-      grid-template-columns: repeat(2, minmax(0, 1fr));
     }
-
-    @media (min-width: 700px) {
-      .gallery {
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-      }
+    .gallery-item {
+      text-align: center;
     }
-
-    @media (min-width: 1000px) {
-      .gallery {
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      }
-    }
-
-    .gallery-item { text-align: left; }
-    .gallery-item img,
-    .gallery-item iframe {
-      width: 100%;
-      border-radius: 10px;
-      display: block;
-    }
-
     .gallery-item img {
+      width: 100%;
       cursor: pointer;
-      transition: transform 0.2s ease;
+      border-radius: 8px;
+      transition: transform 0.2s;
     }
-    .gallery-item img:hover { transform: scale(1.02); }
-
+    .gallery-item img:hover {
+      transform: scale(1.03);
+    }
     .caption {
-      font-size: 0.92rem;
+      font-size: 0.9rem;
       color: #666;
       margin-top: 8px;
-      line-height: 1.35;
     }
-
-    .see-more { text-align: center; margin-top: 30px; }
+    .see-more {
+      text-align: center;
+      margin-top: 30px;
+    }
     .see-more a {
       display: inline-block;
       padding: 10px 20px;
       background: #000;
       color: #fff;
-      border-radius: 999px;
+      border-radius: 30px;
       text-decoration: none;
       transition: background 0.3s ease;
     }
-    .see-more a:hover { background: #333; }
-
+    .see-more a:hover {
+      background: #333;
+    }
     #lightbox {
       position: fixed;
-      top: 0; left: 0;
+      top: 0;
+      left: 0;
       width: 100%;
       height: 100%;
       background: rgba(0,0,0,0.8);
@@ -224,14 +202,12 @@
       justify-content: center;
       align-items: center;
       z-index: 1000;
-      padding: 18px;
     }
     #lightbox img {
-      max-width: 100%;
-      max-height: 85vh;
-      border-radius: 12px;
+      max-width: 90%;
+      max-height: 80%;
+      border-radius: 10px;
     }
-
     .jump-top {
       position: fixed;
       bottom: 20px;
@@ -244,32 +220,25 @@
       font-size: 0.9rem;
       z-index: 1000;
     }
-
     footer {
       text-align: center;
       padding: 40px;
       font-size: 0.9rem;
       background: #eee;
     }
-
-    /* Mobile typography + make nav buttons swipeable */
     @media (max-width: 600px) {
-      header h1 { font-size: 2.35rem; }
-      header h2 { font-size: 1.05rem; }
-
-      .nav-buttons {
-        justify-content: flex-start;
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
-        padding: 10px 12px;
-        gap: 8px;
+      header h1 {
+        font-size: 2.5rem;
       }
-      .nav-buttons::-webkit-scrollbar { display: none; }
+      header h2 {
+        font-size: 1.2rem;
+      }
     }
   </style>
 </head>
-
 <body>
+
+  <!-- Hamburger overlay + menu (added) -->
   <div class="menu-overlay" id="menuOverlay"></div>
   <nav class="menu-panel" id="menuPanel" aria-label="Site menu">
     <a href="#about">About</a>
@@ -281,6 +250,7 @@
   </nav>
 
   <header id="top">
+    <!-- Hamburger button (added) -->
     <button class="hamburger" id="hamburgerBtn" aria-label="Open menu" type="button">
       <span class="hamburger-lines" aria-hidden="true">
         <span></span><span></span><span></span>
@@ -289,14 +259,13 @@
 
     <h1>NIKO YAITANES</h1>
     <h2>Creative Direction · Digital Strategy · Visual Storytelling&nbsp;· AI Strategy&nbsp;</h2>
-
     <div class="nav-buttons">
-      <button type="button" onclick="scrollToSection('about')">About</button>
-      <button type="button" onclick="scrollToSection('photography')">Photography</button>
-      <button type="button" onclick="scrollToSection('design')">Design</button>
-      <button type="button" onclick="scrollToSection('social')">Social Media</button>
-      <button type="button" onclick="scrollToSection('video')">Videography</button>
-      <button type="button" onclick="scrollToSection('ai')">AI</button>
+      <button onclick="scrollToSection('about')">About</button>
+      <button onclick="scrollToSection('photography')">Photography</button>
+      <button onclick="scrollToSection('design')">Design</button>
+      <button onclick="scrollToSection('social')">Social Media</button>
+      <button onclick="scrollToSection('video')">Videography</button>
+      <button onclick="scrollToSection('ai')">AI</button>
     </div>
   </header>
 
@@ -312,31 +281,31 @@
     <h3>PHOTOGRAPHY&nbsp;</h3>
     <p>Sample photography work: live events, news coverage, and notable figures</p>
     <div class="gallery">
-      <div class="gallery-item"> <a href="links/photography-examples-1.jpg"><img src="links/photography-examples-1.jpg" alt="Skincare campaign in natural light"></a>
+      <div class="gallery-item"> <a href="links/photography-examples-1.jpg"><img src="links/photography-examples-1.jpg" alt="Jennifer Garner and Jason Bateman hold up awards"></a>
         <p class="caption">Jennifer Garner and Jason Bateman honored at the Hasty Pudding Ceremony</p>
       </div>
       <div class="gallery-item">
-        <img src="links/photography-examples-2.jpg" alt="Portrait series in downtown Boston">
+        <img src="links/photography-examples-2.jpg" alt="Harvard University banners with the sunny campus in the background">
         <p class="caption">Harvard commencement  photo&nbsp;</p>
       </div>
       <div class="gallery-item">
-        <img src="links/photography-examples-3.jpg" alt="Editorial concept shoot – symmetry and shadows">
+        <img src="links/photography-examples-3.jpg" alt="Harvard President Alan M. Garber speaks at the podium">
         <p class="caption">Harvard University President Alan M. Garber</p>
       </div>
-		<div class="gallery-item"> <a href="links/photography-examples-1.jpg"><img src="links/photography-examples-4.jpg" alt="Skincare campaign in natural light"></a>
+		<div class="gallery-item"> <a href="links/photography-examples-1.jpg"><img src="links/photography-examples-4.jpg" alt="Michelle Yeoh speaks at Harvard Law School"></a>
         <p class="caption">Michelle Yeoh speaking at Harvard Law School</p>
       </div>
       <div class="gallery-item">
-        <img src="links/photography-examples-6.jpg" alt="Portrait series in downtown Boston">
+        <img src="links/photography-examples-6.jpg" alt="Charlotte Lawrence performs in Boston, Massachusetts">
         <p class="caption">Live concert example- Charlotte Lawrence in Boston, MA</p>
       </div>
       <div class="gallery-item">
-        <img src="links/photography-examples-5.jpg" alt="Editorial concept shoot – symmetry and shadows">
+        <img src="links/photography-examples-5.jpg" alt="John Harvard statue">
         <p class="caption">John Harvard statue used as art for online article for Harvard Magazine&nbsp; &nbsp;&nbsp;</p>
       </div>
     </div>
     <div class="see-more">
-      <a href="Photography page.html">See More Photography →</a>
+      <a href="photography.html">See More Photography →</a>
     </div>
   </section>
 
@@ -345,32 +314,32 @@
     <p>Digital, print, branding, and experimental graphic design projects.</p>
     <div class="gallery">
       <div class="gallery-item">
-        <img src="links/design-examples-1.jpg" alt="Minimalist event flyer for art show">
+        <img src="links/design-examples-1.jpg" alt="Left to right: Phillis Wheatley, Melvin B. Tolson, Dudley Randall, Gwendolyn Brooks, Yusef Komunyakaa, Paul Laurence Dunbar. In the background: On Virtue, written in 1766 by Phillis Wheatley ">
         <p class="caption">Editorial design: montage accompanying an article that ran in print and online for <em>Harvard Magazine&nbsp; &nbsp;</em></p>
       </div>
       <div class="gallery-item">
-        <img src="links/design-examples-2-1.jpg" alt="Brand identity mockup for tech startup">
-        <p class="caption">Editorial design: an abstract montage for a Harvard Magazine article on Epstein-Barr virus&nbsp; as the cause of MS. This was the top story of the year, with over a million views.&nbsp; &nbsp;</p>
+        <img src="links/design-examples-2-1.jpg" alt="Abstract brain illustration">
+        <p class="caption">Editorial design: an abstract montage for a <em>Harvard Magazine</em> article on Epstein-Barr virus&nbsp; as the cause of MS. This was the top story of the year, with over a million views.&nbsp; &nbsp;</p>
       </div>
 		<div class="gallery-item">
-        <img src="links/design-examples-3.jpg" alt="Brand identity mockup for tech startup">
-        <p class="caption">Editorial design: an abstract montage for a Harvard Magazine article on Epstein-Barr virus&nbsp; as the cause of MS. This was the top story of the year, with over a million views.&nbsp; &nbsp;</p>
+        <img src="links/design-examples-3.jpg" alt="Illustration of person wearing mask with COVID in teh background">
+        <p class="caption">Editorial design: an abstract montage for a <em>Harvard Magazine</em> article on Long COVID.&nbsp; &nbsp;</p>
       </div>
 		<div class="gallery-item">
-        <img src="links/design-examples-4.jpg" alt="Brand identity mockup for tech startup">
-        <p class="caption">Editorial design: an abstract montage for a Harvard Magazine article on Epstein-Barr virus&nbsp; as the cause of MS. This was the top story of the year, with over a million views.&nbsp; &nbsp;</p>
+        <img src="links/design-examples-4.jpg" alt="Print marketing flyer with Harvard email newsletter offerings">
+        <p class="caption">Marketing design: Print advertisement that ran in Harvard Football's programs for a season.</p>
       </div>
 		<div class="gallery-item">
-        <img src="links/design-examples-6.jpg" alt="Brand identity mockup for tech startup">
-        <p class="caption">Editorial design: an abstract montage for a Harvard Magazine article on Epstein-Barr virus&nbsp; as the cause of MS. This was the top story of the year, with over a million views.&nbsp; &nbsp;</p>
+        <img src="links/design-examples-6.jpg" alt="Print marketing flyer for BOSTON UNIVERSITY CADER with a colorful wheel">
+        <p class="caption">Marketing design: At Boston University CADER, I created a wheel to communicate their offerings to those interested in CEU trainings.</p>
       </div>
 	  <div class="gallery-item">
-        <img src="links/design-examples-7.jpg" alt="Brand identity mockup for tech startup">
+        <img src="links/design-examples-7.jpg" alt="Restore Body Balance book cover">
         <p class="caption">Restore Body Balance Book cover: I designed the book's typography, the cover, and the layout of its accompanying journal.&nbsp; &nbsp;</p>
       </div>
     </div>
     <div class="see-more">
-      <a href="Design page.html">See More Design →</a>
+      <a href="design.html">See More Design →</a>
     </div>
 </section>
 
@@ -379,19 +348,19 @@
     <p>Campaign strategy, content creation, and platform storytelling.</p>
 	  <div class="gallery">
 	  <div class="gallery-item">
-        <img src="links/social-examples-1.png" alt="Minimalist event flyer for art show">
+        <img src="links/social-examples-1.png" alt="Infographic on failing at Harvard with a torn piece of paper">
         <p class="caption">Text-based infographic to convert readers from Instagram to a<em> Harvard Magazine </em>article. It broke the record for the most click throughs for Instagram from a post for the account.&nbsp;&nbsp;</p>
       </div>
       <div class="gallery-item">
-        <img src="links/social-examples-2.png" alt="Brand identity mockup for tech startup">
+        <img src="links/social-examples-2.png" alt="Pullquote about the heightened risk of mortality associated with loneliness">
         <p class="caption">Text-based infographic with the goal of encouraging conversation surrounding an article&nbsp; &nbsp;&nbsp;</p>
       </div>
 		<div class="gallery-item">
-        <img src="links/social-examples-3.png" alt="Brand identity mockup for tech startup">
+        <img src="links/social-examples-3.png" alt="How Disinformation Campaigns Begin">
         <p class="caption">Text-based infographic with the goal of informing an engaged Harvard alumni audience</p>
     </div></div>
     <div class="see-more">
-      <a href="social.html">See More Social Media →</a>
+      <a href="social media.html">See More Social Media →</a>
     </div>
   </section>
 
@@ -399,12 +368,11 @@
     <h3>VIDEOGRAPHY</h3>
     <p>Motion graphics, reels, and multimedia storytelling.</p>
 	  <div class="gallery">
-	  <div class="gallery-item">
-        <img src="links/video-examples-2-copy.jpg" alt="Minimalist event flyer for art show">
+	  <div class="gallery-item"> <a href="https://www.youtube.com/watch?v=crkCNIlChXM&source_ve_path=MTc4NDI0"><img src="links/video-examples-2-copy.jpg" alt="Minimalist event flyer for art show"></a>
         <p class="caption">Virtual tour of the Gibson House Museum: shooting, editing, pre/post production, and packaging for YouTube&nbsp;</p>
       </div>
       <div class="gallery-item">
-        <img src="links/video-examples-1 copy.png" alt="Brand identity mockup for tech startup">
+        <img src="links/video-examples-1 copy.png" alt="The Life of a Harvard Ethnobotanist video">
         <p class="caption">Video for <em>Harvard Magazine</em>: the Life of a Harvard Ethnobotanist. Shooting, editing, pre/post production, and packaging for YouTube  &nbsp;</p>
       </div>
 		<div class="gallery-item">  <div style="padding:177.78% 0 0 0;position:relative;"><iframe src="https://player.vimeo.com/video/1151356311?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" frameborder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share" referrerpolicy="strict-origin-when-cross-origin" style="position:absolute;top:0;left:0;width:100%;height:100%;" title="Paris in 30 Seconds"></iframe></div><script src="https://player.vimeo.com/api/player.js"></script>
@@ -419,7 +387,7 @@
     <h3>ARTIFICIAL INTELLIGENCE (AI) STRATEGY</h3>
     <p>My interest in AI is  focused on reducing&nbsp;repetitive clerical tasks and improving efficiencies. I created several custom GPTs for routine work at Harvard Magazine, saving hours of work each week for myself and colleagues. Additionally, I keep cybersecurity in mind, and have worked with AI models such as ChatGPT to create scripts and applications for offline processing.&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</p>
     <div class="see-more">
-      <a href="GPT page.html">See  AI Projects →</a>
+      <a href="ai strategy.html">See  AI Projects →</a>
     </div>
   </section>
 
