@@ -461,6 +461,20 @@
     }
   </style>
 </head>
+<script>
+  document.querySelectorAll('a[href]').forEach(link => {
+    const href = link.getAttribute('href');
+
+    if (!href || href.startsWith('#') || href.startsWith('javascript')) return;
+
+    const isExternal = link.hostname && link.hostname !== location.hostname;
+    if (!isExternal) return;
+
+    link.setAttribute('target', '_blank');
+    link.setAttribute('rel', 'noopener noreferrer');
+  });
+</script>
+
 
 <body>
   <div class="pixels" aria-hidden="true"></div>
@@ -615,7 +629,7 @@
 			  <a class="link" href="design-examples-7">design-examples-7</a>
           </div>
           <p class="line">Animated and static illustration for a Harvard Magazine article</p>
-          <p class="line">Associated article&nbsp;</p>
+          <p class="line"><a href="https://www.harvardmagazine.com/2023/02/academic-workers-rally-for-union-recognition">Associated article</a>&nbsp;</p>
         </div>
       </article>
 
@@ -655,7 +669,7 @@
             <a class="link" href="design-examples-10">design-examples-10</a>
           </div>
           <p class="line">Animated and static illustration for a Harvard Magazine article</p>
-          <p class="line">Associated article </p>
+          <p class="line"><a href="https://www.harvardmagazine.com/2024/12/seeing-methane-from-space">Associated article </a> </p>
         </div>
       </article>
 
@@ -669,7 +683,7 @@
             <a class="link" href="design-examples-11">design-examples-11</a>
           </div>
           <p class="line">Animated and static illustration for a Harvard Magazine article</p>
-          <p class="line">Asssociated article&nbsp;</p>
+          <p class="line"><a href="https://www.harvardmagazine.com/2023/08/ai-in-education">Asssociated article</a>&nbsp;</p>
         </div>
       </article>
 
@@ -683,12 +697,12 @@
             <a class="link" href="design-examples-12">design-examples-12</a>
           </div>
            <p class="line">Montage illustration for a Harvard Magazine article</p>
-          <p class="line">Asssociated article&nbsp;</p>
+          <p class="line"><a href="https://www.harvardmagazine.com/2022/12/covid-reinfection">Asssociated article</a>&nbsp;</p>
         </div>
       </article>
 
       <article class="tile" data-tags="motion editorial">
-        <a class="thumb" href="design-examples-13" aria-label="Open design example 13">
+        <a class="thumb" href="links/design-examples-16.gif" aria-label="Open design example 13">
           <img src="links/design-examples-16.gif" alt="Design example 13" loading="lazy">
         </a>
         <div class="caption">
@@ -697,7 +711,7 @@
             <a class="link" href="design-examples-13">design-examples-13</a>
           </div>
            <p class="line">Animated and static illustration for a Harvard Magazine article</p>
-          <p class="line">Asssociated article&nbsp;</p>
+          <p class="line"><a href="https://www.harvardmagazine.com/2023/11/bezos-earth-fund-seeds-transformation">Asssociated article</a>&nbsp;</p>
         </div>
       </article>
 
@@ -737,7 +751,7 @@
             <a class="link" href="design-examples-16">design-examples-16</a>
           </div>
            <p class="line">Animated and static illustration for a Harvard Magazine article</p>
-          <p class="line">Asssociated article&nbsp;</p>
+          <p class="line"><a href="https://www.harvardmagazine.com/2024/08/harvard-financial-outlook-fy2024">Asssociated article&nbsp;</a></p>
         </div>
       </article>
 
