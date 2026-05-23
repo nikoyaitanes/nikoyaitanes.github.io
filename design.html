@@ -843,10 +843,13 @@
     menuBtn.setAttribute("aria-expanded", "false");
   }
 
-  backBtn?.addEventListener("click", () => {
-    if (window.history.length > 1) window.history.back();
-    else window.location.href = "about";
-  });
+backBtn?.addEventListener("click", () => {
+  if (document.referrer && document.referrer.startsWith("https://nikoyaitanes.com")) {
+    window.history.back();
+  } else {
+    window.location.href = "https://nikoyaitanes.com";
+  }
+});
 
   menuBtn?.addEventListener("click", () => {
     const isOpen = menuPanel.classList.contains("open");
