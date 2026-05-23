@@ -540,7 +540,7 @@
         </div>
         <div class="caption">
           <div class="metaRow">
-            <span class="tag">LONG-FORM · VIMEO</span>
+            <span class="tag">LONG-FORM · YOUTUBE</span>
             <a class="link" href="video-examples-2">video-examples-2</a>
           </div>
           <p class="line">Video for <em>Harvard Magazine</em>: the Life of a Harvard Ethnobotanist. Shooting, editing, pre/post production, and packaging for YouTube</p>
@@ -566,7 +566,7 @@
         </div>
         <div class="caption">
           <div class="metaRow">
-            <span class="tag">LONG-FORM · VIMEO</span>
+            <span class="tag">LONG-FORM · YOUTUBE</span>
             <a class="link" href="video-examples-4">video-examples-4</a>
           </div>
           <p class="line">Teaser video for the Gibson House Museum tour.</p>
@@ -598,7 +598,7 @@
         </div>
         <div class="caption">
           <div class="metaRow">
-            <span class="tag">SHORT-FORM · INSTAGRAM</span>
+            <span class="tag">SHORT-FORM · VIMEO</span>
             <a class="link" href="video-examples-6">video-examples-6</a>
           </div>
           <p class="line">Paris, FR | Travel short-form video example.</p>
@@ -630,7 +630,7 @@
         </div>
         <div class="caption">
           <div class="metaRow">
-            <span class="tag">SHORT-FORM · YOUTUBE</span>
+            <span class="tag">SHORT-FORM · INSTAGRAM</span>
             <a class="link" href="video-examples-8">video-examples-8</a>
           </div>
           <p class="line"> Short-form video to <a href="https://www.harvardmagazine.com/2022/07/stephanie-gil-robots-working-together">accompany an article</a> showcasing research at the Harvard Paulson School of Engineering.&nbsp;</p>
@@ -726,9 +726,12 @@
   }
 
   backBtn?.addEventListener("click", () => {
-    if (window.history.length > 1) window.history.back();
-    else window.location.href = "about";
-  });
+  if (document.referrer && document.referrer.startsWith("https://nikoyaitanes.com")) {
+    window.history.back();
+  } else {
+    window.location.href = "https://nikoyaitanes.com";
+  }
+});
 
   menuBtn?.addEventListener("click", () => {
     const isOpen = menuPanel.classList.contains("open");
