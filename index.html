@@ -18,7 +18,7 @@
     }
 
     header {
-      background: linear-gradient(rgba(0, 0, 0, .28), rgba(0, 0, 0, .28)), url('links/miami-bg-2.png') no-repeat center 48%/cover;
+      background: linear-gradient(rgba(0, 0, 0, .28), rgba(0, 0, 0, .28)), url('https://nikoyaitanes.com/links/miami-bg-2.png') no-repeat center 48%/cover;
       min-height: 420px;
       height: 52svh;
       max-height: 620px;
@@ -364,6 +364,31 @@ section h3 a:hover {
     .heading-reveal.is-visible { opacity: 1; transform: translateY(0); }
     @media (max-width: 600px) { header h1 { font-size: 2.3rem; letter-spacing: .08em; } header h2 { font-size: .9rem; } .floating-nav .nav-brand { font-size: 1rem; } }
     @media (prefers-reduced-motion: reduce) { .heading-reveal { opacity: 1; transform: none; transition: none; } .floating-nav .desktop-links a:hover, .floating-nav .desktop-links a:focus-visible { animation: none; background-size: 100% 1px; } }
+
+    /* Stronger hierarchy for the positioning statement and section headings. */
+    header { background-color: #171918; padding-top: 100px; padding-bottom: 48px; }
+    header h2.hero-positioning { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px 28px; max-width: 1000px; margin: 24px 0 14px; font-size: clamp(1.05rem, 1.8vw, 1.45rem); font-weight: 600; text-transform: uppercase; letter-spacing: .08em; line-height: 1.5; }
+    .hero-positioning span { display: inline-block; padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,.7); }
+    .intro-summary { font-size: 1.05rem; line-height: 1.65; margin: 14px 0 0; color: #fff; }
+    section h3 { font-weight: 700; letter-spacing: .07em; }
+    section h3::after { width: 100%; background: #99998f; margin-top: 16px; }
+    .impact-card strong .count-up { font: inherit; line-height: inherit; color: inherit; font-variant-numeric: tabular-nums; }
+    @media (max-width: 600px) { header h2.hero-positioning { flex-direction: column; align-items: center; gap: 6px; font-size: 1.05rem; } header { padding-top: 100px; } }
+
+    /* Coastal hero: confident title and understated motion. */
+    header { background-image: linear-gradient(rgba(0,0,0,.28), rgba(0,0,0,.4)), url('https://nikoyaitanes.com/links/miami-bg-2.png'); background-size: cover; background-position: center 48%; background-repeat: no-repeat; background-attachment: fixed; }
+    header h1 { font-weight: 700; letter-spacing: .09em; }
+    .hero-positioning span { border-bottom: none; animation: specialty-fade 1.2s ease both; }
+    .hero-positioning span:nth-child(2) { animation-delay: .15s; }
+    .hero-positioning span:nth-child(3) { animation-delay: .3s; }
+    @keyframes specialty-fade { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+    @media (max-width: 900px), (hover: none) { header { background-attachment: scroll; } }
+    @media (prefers-reduced-motion: reduce) { header { background-attachment: scroll; } .hero-positioning span { animation: none; } }
+
+    header h1 { font-weight: 300; }
+    .floating-nav .nav-brand { font-weight: 700; }
+
+    header h1, .impact-card strong { font-weight: 700; }
   </style>
 </head>
 <body>
@@ -395,16 +420,16 @@ section h3 a:hover {
 
 
     <h1>NIKO YAITANES</h1>
-    <h2>Creative Direction · Multimedia Design · Digital &amp; AI Strategy</h2>
+    <h2 class="hero-positioning"><span>Creative Direction</span><span>Multimedia Design</span><span>Digital &amp; AI Strategy</span></h2>
     <p class="intro-summary">I turn complex ideas into compelling visuals, audience-focused content, and more efficient creative workflows.</p>
 
   </header>
 
   <div class="career-highlights">
     <div class="impact-grid" aria-label="Selected career highlights">
-      <div class="impact-card"><strong>800+</strong><span>Published visual works across illustration, photography, motion graphics, and video.</span></div>
-      <div class="impact-card"><strong>1M+</strong><span>Views on the magazine's top story of the year, supported by my editorial illustration.</span></div>
-      <div class="impact-card"><strong>Record-breaking social media strategy</strong><span>Instagram-to-article click-through performance for a post featuring my social graphic.</span></div>
+      <div class="impact-card"><strong aria-label="More than 800"><span class="count-up" data-count="800" data-suffix="+" aria-hidden="true">800+</span></strong><span>Published visual works across illustration, photography, motion graphics, and video.</span></div>
+      <div class="impact-card"><strong aria-label="More than one million"><span class="count-up" data-count="1" data-suffix="M+" data-decimals="1" aria-hidden="true">1M+</span></strong><span>Views on the magazine's top story of the year, supported by my editorial illustration.</span></div>
+      <div class="impact-card"><strong>Record-breaking social strategy</strong><span>Instagram-to-article click-through performance for a post featuring my social graphic.</span></div>
     </div>
   </div>
 
@@ -654,6 +679,29 @@ section h3 a:hover {
         heading.classList.add('heading-reveal');
         headingObserver.observe(heading);
       });
+    }
+
+    // Count highlights once on entry; preserve final values for reduced motion and no JS.
+    if ('IntersectionObserver' in window && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      const countObserver = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+          if (!entry.isIntersecting) return;
+          const element = entry.target;
+          observer.unobserve(element);
+          const target = Number(element.dataset.count);
+          const decimals = Number(element.dataset.decimals || 0);
+          const suffix = element.dataset.suffix;
+          const start = performance.now();
+          function tick(now) {
+            const progress = Math.min((now - start) / 1400, 1);
+            const value = target * (1 - Math.pow(1 - progress, 3));
+            element.textContent = progress === 1 ? target + suffix : (decimals ? value.toFixed(decimals) : Math.floor(value).toLocaleString()) + suffix;
+            if (progress < 1) requestAnimationFrame(tick);
+          }
+          requestAnimationFrame(tick);
+        });
+      }, { threshold: .5 });
+      document.querySelectorAll('.count-up').forEach(element => countObserver.observe(element));
     }
   </script>
 </body>
