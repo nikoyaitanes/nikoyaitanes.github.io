@@ -389,6 +389,26 @@ section h3 a:hover {
     .floating-nav .nav-brand { font-weight: 700; }
 
     header h1, .impact-card strong { font-weight: 700; }
+
+    .case-study { border-left: none; }
+    .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
+    header h2.rotating-positioning { display: block; height: 1.6em; }
+    .hero-positioning .specialty-window { display: block; height: 1.6em; overflow: hidden; padding: 0; animation: none; }
+    .hero-positioning .specialty-track { display: block; padding: 0; animation: specialty-cycle 10.5s cubic-bezier(.65,0,.35,1) infinite; }
+    .hero-positioning .specialty-track > span { display: block; height: 1.6em; line-height: 1.6; padding: 0; animation: none; white-space: nowrap; }
+    @keyframes specialty-cycle { 0%, 23% { transform: translateY(0); } 33%, 56% { transform: translateY(-25%); } 66%, 89% { transform: translateY(-50%); } 100% { transform: translateY(-75%); } }
+    .case-scroll-controls { display: flex; align-items: center; justify-content: space-between; margin: 24px 0 12px; font-size: .85rem; color: #555; }
+    .case-scroll-controls button { width: 42px; height: 42px; margin-left: 8px; border: 1px solid #d4d4cc; border-radius: 50%; background: #f3f3f0; color: #222; cursor: pointer; font-size: 1.2rem; }
+    .case-scroll-controls button:disabled { opacity: .35; cursor: default; }
+    .case-scroll { display: flex; gap: 20px; overflow-x: auto; scroll-snap-type: x mandatory; scroll-padding-inline: 0; padding-bottom: 14px; scrollbar-width: thin; scrollbar-color: #aaa89f #f3f3f0; }
+    .case-scroll .case-study { flex: 0 0 88%; min-width: 0; margin: 0; scroll-snap-align: start; }
+    @media (max-width: 600px) { .case-scroll .case-study { flex-basis: 92%; } header h2.rotating-positioning { font-size: clamp(.85rem, 3.5vw, 1.05rem); } }
+    @media (prefers-reduced-motion: reduce) { .hero-positioning .specialty-track { animation: none; } header h2.rotating-positioning { height: auto; } .hero-positioning .specialty-window { height: auto; overflow: visible; } .hero-positioning .specialty-track > span:last-child { display: none; } }
+
+    /* Fit the complete photograph inside the desktop hero, including the shoreline. */
+    @media (min-width: 901px) and (hover: hover) {
+      header { background-size: 100% 100%, cover; background-position: center, center 65%; background-attachment: scroll; }
+    }
   </style>
 </head>
 <body>
@@ -420,7 +440,7 @@ section h3 a:hover {
 
 
     <h1>NIKO YAITANES</h1>
-    <h2 class="hero-positioning"><span>Creative Direction</span><span>Multimedia Design</span><span>Digital &amp; AI Strategy</span></h2>
+    <h2 class="hero-positioning rotating-positioning"><span class="sr-only">Creative Direction · Multimedia Design · Digital &amp; AI Strategy</span><span class="specialty-window" aria-hidden="true"><span class="specialty-track"><span>Creative Direction</span><span>Multimedia Design</span><span>Digital &amp; AI Strategy</span><span>Creative Direction</span></span></span></h2>
     <p class="intro-summary">I turn complex ideas into compelling visuals, audience-focused content, and more efficient creative workflows.</p>
 
   </header>
@@ -444,10 +464,11 @@ section h3 a:hover {
      <h3><a href="design.html">DESIGN</a></h3>
     <p>Digital, print, branding, and experimental graphic design projects.</p>
     
-    <article class="case-study"><h4>Making complex research accessible</h4><p class="role">Editorial illustration · Visual concept development · Print and digital</p><dl><dt>Challenge</dt><dd>Translate specialized research into an immediate, engaging visual for a broad readership.</dd><dt>Solution</dt><dd>Develop conceptual montage illustrations that connect the central idea of each story to an accessible visual metaphor, with execution suited to print and digital publishing.</dd><dt>Outcome</dt><dd>My illustration accompanied the Epstein–Barr virus and multiple sclerosis article, the magazine’s top story of the year with more than one million views. The readership figure reflects the article’s performance; illustration was one part of its presentation.</dd></dl></article>
+    
 
-    <article class="case-study"><h4>Clarifying a continuing education offering</h4><p class="role">Boston University CADER · Marketing design · Information hierarchy</p><dl><dt>Challenge</dt><dd>Present a range of continuing education options in a format prospective participants can quickly understand.</dd><dt>Solution</dt><dd>Create a visual wheel that organizes the offerings into a clear, scannable marketing piece.</dd><dt>Outcome</dt><dd>The flyer helped communicate the program’s options and supported participant recruitment. </dd></dl></article>
-    <div class="gallery">
+    
+    <div class="case-scroll-controls"><span>Selected case studies</span><div><button type="button" class="case-prev" aria-label="Previous design case study" aria-controls="design-case-scroll">←</button><button type="button" class="case-next" aria-label="Next design case study" aria-controls="design-case-scroll">→</button></div></div><div class="case-scroll" id="design-case-scroll" tabindex="0" role="region" aria-label="Design case studies"><article class="case-study"><h4>Redesigning the Harvard Magazine homepage</h4><p class="role">Project leadership · Figma wireframes · Editorial content strategy · Drupal</p><dl><dt>Challenge</dt><dd>Create a digital-first homepage that improves mobile responsiveness, accommodates print and digital editorial priorities, and makes content publishing and updates more flexible.</dd><dt>Solution</dt><dd>Serve as project lead, developing Figma wireframes around the needs of both print and digital publishing. Guide multiple wireframe iterations, lead weekly project meetings, and maintain the project schedule.</dd><dt>Outcome</dt><dd>The redesign met the project’s KPIs and introduced a hybrid content model using Drupal blocks. Automatic content updates replaced the previous fully manual homepage workflow, making ongoing publishing easier to maintain.</dd></dl></article><article class="case-study"><h4>Making complex research accessible</h4><p class="role">Editorial illustration · Visual concept development · Print and digital</p><dl><dt>Challenge</dt><dd>Translate specialized research into an immediate, engaging visual for a broad readership.</dd><dt>Solution</dt><dd>Develop conceptual montage illustrations that connect the central idea of each story to an accessible visual metaphor, with execution suited to print and digital publishing.</dd><dt>Outcome</dt><dd>My illustration accompanied the Epstein–Barr virus and multiple sclerosis article, the magazine’s top story of the year with more than one million views. The readership figure reflects the article’s performance; illustration was one part of its presentation.</dd></dl></article><article class="case-study"><h4>Clarifying a continuing education offering</h4><p class="role">Boston University CADER · Marketing design · Information hierarchy</p><dl><dt>Challenge</dt><dd>Present a range of continuing education options in a format prospective participants can quickly understand.</dd><dt>Solution</dt><dd>Create a visual wheel that organizes the offerings into a clear, scannable marketing piece.</dd><dt>Outcome</dt><dd>The flyer helped communicate the program’s options and supported participant recruitment. </dd></dl></article></div>
+<div class="gallery">
       <div class="gallery-item">
         <img loading="lazy" decoding="async" src="links/design-examples-1.jpg" alt="Left to right: Phillis Wheatley, Melvin B. Tolson, Dudley Randall, Gwendolyn Brooks, Yusef Komunyakaa, Paul Laurence Dunbar. In the background: On Virtue, written in 1766 by Phillis Wheatley" onclick="openLightbox(this)">
         <p class="caption">Editorial design: montage accompanying an article that ran in print and online for <em>Harvard Magazine</em></p>
@@ -703,6 +724,23 @@ section h3 a:hover {
       }, { threshold: .5 });
       document.querySelectorAll('.count-up').forEach(element => countObserver.observe(element));
     }
+
+    const designScroller = document.getElementById('design-case-scroll');
+    const previousCase = document.querySelector('.case-prev');
+    const nextCase = document.querySelector('.case-next');
+    function updateCaseControls() {
+      previousCase.disabled = designScroller.scrollLeft <= 2;
+      nextCase.disabled = designScroller.scrollLeft + designScroller.clientWidth >= designScroller.scrollWidth - 2;
+    }
+    function moveCase(direction) {
+      const step = designScroller.querySelector('.case-study').getBoundingClientRect().width + 20;
+      designScroller.scrollBy({ left: direction * step, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth' });
+    }
+    previousCase.addEventListener('click', () => moveCase(-1));
+    nextCase.addEventListener('click', () => moveCase(1));
+    designScroller.addEventListener('scroll', updateCaseControls, { passive: true });
+    window.addEventListener('resize', updateCaseControls);
+    updateCaseControls();
   </script>
 </body>
 </html>
